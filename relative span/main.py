@@ -24,7 +24,7 @@ def handler():
     result_tablename = 'maxspan'
     sqlite_db = 'crypto.db'
     archive_folder = 'archives'
-    sleep_seconds = 0
+    sleep_seconds = 5
     start_year = 2014
     end_year = datetime.datetime.now().year
 
@@ -94,6 +94,8 @@ def handler():
         print(greatest_span_key + ' had the greatest relative span for ' + symbol + ' with value of ' + str(greatest_span))
 
         # saving the results in db table for API use
+        logging.info("Storing the result in results maxspan table")
+        sleep(sleep_seconds)
         save_result(conn, result_tablename, [greatest_span_key, result_dict[greatest_span_key], execution_date])
 
         return json.dumps(result_dict)
