@@ -78,8 +78,14 @@ def get_relative_spans(start_year, end_year,  df, conn, table_name):
         total_weeks = weeks_for_year(year)
         for week in range(1, total_weeks + 1):
             start, end = get_start_end_dates(year,week)
-            print(df.loc[start:end])
+            filtered_df = df.loc[start:end]
+            if not (filtered_df.empty):
+                key = str(year) + '-W' + str(week)
+                max_close = float(filtered_df['close_usd'].max())
+                min_close = float(filtered_df['close_usd'].min())
+                relative_span_dict[key] = (max_close - min_close)/min_close
 
+    print(relative_span_dict)
 
 def test_sample_data(conn, table_name):
     cursorObj = conn.cursor()
