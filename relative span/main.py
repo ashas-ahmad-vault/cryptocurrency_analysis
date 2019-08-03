@@ -88,13 +88,12 @@ def handler():
         greatest_span_key = relative_span.get_week_with_greatest_relative_span(weekly_spans)
 
         greatest_span = weekly_spans[greatest_span_key]
-
         result_dict = {}
-
         result_dict[greatest_span_key] = weekly_spans[greatest_span_key]
 
         print(greatest_span_key + ' had the greatest relative span for ' + symbol + ' with value of ' + str(greatest_span))
 
+        # saving the results in db table for API use
         save_result(conn, result_tablename, [greatest_span_key, result_dict[greatest_span_key], execution_date])
 
         return json.dumps(result_dict)
