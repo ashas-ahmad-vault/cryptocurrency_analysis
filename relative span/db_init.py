@@ -35,6 +35,18 @@ def test_sample_data(conn, table_name):
 
     return rows
 
+def save_result(conn, table_name, list_items):
+    conn.execute('insert into '+table_name+' values (?,?,?)', list_items)
+    conn.commit()
+
+def get_maxspan(conn, table_name):
+    cursorObj = conn.cursor()
+    cursorObj.execute('SELECT * FROM '+table_name+' order by load_date desc limit 1')
+ 
+    rows = cursorObj.fetchall()
+
+    return rows
+
 def main():
     database = "crypto.db"
  
@@ -53,18 +65,29 @@ def main():
                                         coin text
                                     ); """
 
+    sql_create_maxspans_table = """ CREATE TABLE IF NOT EXISTS maxspan (
+                                    week_year decimal,
+                                    relative_span decimal,
+                                    load_date timestamp
+                                ); """
+
     logging.info("Going to create sqlite3 database "+database+" if it does not exists")
     sleep(sleep_seconds)
+
     # create a database connection
     conn = create_connection(database)
     logging.info("Created Successfully")
     sleep(sleep_seconds)
 
     if conn is not None:
-        # create projects table
+        # create data table
         logging.info("Going to create table crypto_daily if it does not exists")
         sleep(sleep_seconds)
         create_table(conn, sql_create_projects_table)
+
+        # create result table
+        logging.info("Going to create table maxspan for result if it does not exists")
+        create_table(conn, sql_create_maxspans_table)
         logging.info("Created Successfully")
         sleep(sleep_seconds)
     else:

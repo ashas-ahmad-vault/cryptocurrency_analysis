@@ -1,8 +1,9 @@
 from alpha_api_parser import api_parser
-from db_init import create_connection, test_sample_data
+from db_init import create_connection, test_sample_data, save_result
 import sqlite3
 import pandas as pd
 import os
+import json
 from time import sleep
 import datetime
 import logging
@@ -10,7 +11,7 @@ import relative_span
 
 logging.basicConfig(level=logging.INFO)
 
-def main():
+def handler():
     
     # setting up api configs
     execution_date = datetime.datetime.now()
@@ -20,9 +21,10 @@ def main():
     market = 'CNY'
     apikey = 'demo'
     table_name = 'crypto_daily'
+    result_tablename = 'maxspan'
     sqlite_db = 'crypto.db'
     archive_folder = 'archives'
-    sleep_seconds = 5
+    sleep_seconds = 0
     start_year = 2014
     end_year = datetime.datetime.now().year
 
@@ -87,14 +89,21 @@ def main():
 
         greatest_span = weekly_spans[greatest_span_key]
 
+        result_dict = {}
+
+        result_dict[greatest_span_key] = weekly_spans[greatest_span_key]
+
         print(greatest_span_key + ' had the greatest relative span for ' + symbol + ' with value of ' + str(greatest_span))
 
-        logging.info("Terminating!!")
-        sleep(sleep_seconds)
+        save_result(conn, result_tablename, [greatest_span_key, result_dict[greatest_span_key], execution_date])
+
+        return json.dumps(result_dict)
+        
     except Exception:
         logging.exception("message")
     finally:
         conn.close()
 
 if __name__ == '__main__':
-    main()
+    print(handler())
+    logging.info("Terminating!!")
