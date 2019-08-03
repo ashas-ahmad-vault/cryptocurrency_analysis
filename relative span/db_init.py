@@ -27,6 +27,14 @@ def create_table(conn, create_table_sql):
     except Error as e:
         print(e)
 
+def test_sample_data(conn, table_name):
+    cursorObj = conn.cursor()
+    cursorObj.execute('SELECT * FROM '+table_name+' limit 2')
+ 
+    rows = cursorObj.fetchall()
+
+    return rows
+
 def main():
     database = "crypto.db"
  
