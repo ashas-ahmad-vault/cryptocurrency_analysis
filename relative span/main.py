@@ -9,8 +9,9 @@ import datetime
 logging.basicConfig(level=logging.INFO)
 
 def main():
-    execution_date = datetime.datetime.now()
+    
     # setting up api configs
+    execution_date = datetime.datetime.now()
     base_url = 'https://www.alphavantage.co/query?function={}&symbol={}&market={}&apikey={}'
     function = 'DIGITAL_CURRENCY_DAILY'
     symbol = 'BTC'
@@ -40,6 +41,7 @@ def main():
     #archiving the file
     df.to_csv(archive_folder + '/' + symbol + '/' + str(execution_date) + '.csv', index=False)
 
+    #setting up db 
     logging.info("Setting up database connection")
     sleep(sleep_seconds)
     conn = create_connection(sqlite_db)
@@ -52,6 +54,9 @@ def main():
     logging.info("Testing the data by getting a sample of it")
     sleep(sleep_seconds)
     test_sample_data(conn, table_name)
+
+    logging.info("Terminating!!")
+    sleep(sleep_seconds)
 
 
 def test_sample_data(conn, table_name):
