@@ -24,12 +24,16 @@ this will prepare sqlite3 database named crypto.db and creates 2 tables within t
 2. maxspan (to store the max span that will be used by the GET API)
 
 
+
+
 Step2 [PROCESSING]:
 execute below command to calculate the relative spans for each iso week
 
 python3 main.py
 
 above program will use all the custom made modules to calculate the greatest max span and will store it in db table.
+
+
 
 
 Step3 [API]:
