@@ -46,6 +46,11 @@ class CryptoCurrency:
         CryptoCurrency.handler(self)
 
     @classmethod
+    def log_info(cls, message, seconds):
+        logging.info(message)
+        sleep(seconds)
+
+    @classmethod
     def handler(cls, self):
         try:
             # using custom module calling api_parser
@@ -63,8 +68,7 @@ class CryptoCurrency:
             if not os.path.exists(self.archive_folder + "/" + self.symbol):
                 os.makedirs(self.archive_folder + "/" + self.symbol)
 
-            logging.info("Archiving the data")
-            sleep(self.sleep_seconds)
+            cls.log_info("Archiving the data", self.sleep_seconds)
             # archiving the file
             df.to_csv(
                 self.archive_folder
@@ -77,30 +81,28 @@ class CryptoCurrency:
             )
 
             # setting up db
-            logging.info("Setting up database connection")
-            sleep(self.sleep_seconds)
+            cls.log_info("Setting up database connection", self.sleep_seconds)
             conn = create_connection(self.sqlite_db)
 
-            logging.info("Saving the data in database table")
-            sleep(self.sleep_seconds)
+            cls.log_info("Saving the data in database table", self.sleep_seconds)
             # saving the df to db table
             df.to_sql(self.table_name, conn, if_exists="replace", index=False)
 
-            logging.info(
-                str(len(df)) + " records have been inserted in " + self.table_name
+            cls.log_info(
+                str(len(df)) + " records have been inserted in " + self.table_name,
+                self.sleep_seconds,
             )
-            sleep(self.sleep_seconds)
 
-            logging.info("Testing the data by getting a sample of it")
-            sleep(self.sleep_seconds)
+            cls.log_info(
+                "Testing the data by getting a sample of it", self.sleep_seconds
+            )
             records = test_sample_data(conn, self.table_name)
 
             # printing out sample records
             for record in records:
                 print(record)
 
-            logging.info("Reading the table into dataframe")
-            sleep(self.sleep_seconds)
+            cls.log_info("Reading the table into dataframe", self.sleep_seconds)
             db_df = pd.read_sql_query(
                 "SELECT date, close_usd FROM " + self.table_name, conn
             )
@@ -108,13 +110,10 @@ class CryptoCurrency:
             # setting up index and sorting
             db_df = db_df.set_index(["date"])
             db_df.sort_index(inplace=True, ascending=True)
-
-            logging.info("Reading Successfull")
-            sleep(self.sleep_seconds)
+            cls.log_info("Reading Successfull", self.sleep_seconds)
 
             # calculating weekly relative spans of closing price
-            logging.info("Calculating relative spans")
-            sleep(self.sleep_seconds)
+            cls.log_info("Calculating relative spans", self.sleep_seconds)
             weekly_spans = relative_span.get_relative_spans(
                 self.start_year, self.end_year, db_df
             )
@@ -135,8 +134,9 @@ class CryptoCurrency:
             )
 
             # saving the results in db table for API use
-            logging.info("Storing the result in results maxspan table")
-            sleep(self.sleep_seconds)
+            cls.log_info(
+                "Storing the result in results maxspan table", self.sleep_seconds
+            )
             save_result(
                 conn,
                 self.result_tablename,
