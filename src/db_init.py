@@ -5,8 +5,8 @@ from time import sleep
 
 logging.basicConfig(level=logging.INFO)
 sleep_seconds = 5
- 
- 
+
+
 def create_connection(db_file):
     """ create a database connection to a SQLite database """
     try:
@@ -14,6 +14,7 @@ def create_connection(db_file):
     except Error as e:
         print(e)
     return conn
+
 
 def create_table(conn, create_table_sql):
     """ create a table from the create_table_sql statement
@@ -27,29 +28,35 @@ def create_table(conn, create_table_sql):
     except Error as e:
         print(e)
 
+
 def test_sample_data(conn, table_name):
     cursorObj = conn.cursor()
-    cursorObj.execute('SELECT * FROM '+table_name+' limit 2')
- 
+    cursorObj.execute("SELECT * FROM " + table_name + " limit 2")
+
     rows = cursorObj.fetchall()
 
     return rows
 
+
 def save_result(conn, table_name, list_items):
-    conn.execute('insert into '+table_name+' values (?,?,?)', list_items)
+    conn.execute("insert into " + table_name + " values (?,?,?)", list_items)
     conn.commit()
+
 
 def get_maxspan(conn, table_name):
     cursorObj = conn.cursor()
-    cursorObj.execute('SELECT * FROM '+table_name+' order by load_date desc limit 1')
- 
+    cursorObj.execute(
+        "SELECT * FROM " + table_name + " order by load_date desc limit 1"
+    )
+
     rows = cursorObj.fetchall()
 
     return rows
 
+
 def main():
     database = "crypto.db"
- 
+
     sql_create_projects_table = """ CREATE TABLE IF NOT EXISTS crypto_daily (
                                         open_cny decimal,
                                         open_usd decimal,
@@ -71,7 +78,9 @@ def main():
                                     load_date timestamp
                                 ); """
 
-    logging.info("Going to create sqlite3 database "+database+" if it does not exists")
+    logging.info(
+        "Going to create sqlite3 database " + database + " if it does not exists"
+    )
     sleep(sleep_seconds)
 
     # create a database connection
@@ -96,7 +105,6 @@ def main():
     logging.info("Terminating!!")
     sleep(sleep_seconds)
 
- 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()
-    
