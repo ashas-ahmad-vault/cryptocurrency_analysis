@@ -28,7 +28,7 @@ this will prepare sqlite3 database named crypto.db and creates 2 tables within t
 
 #### Step2 [PROCESSING]:
 execute below command to calculate the relative spans for each iso week
-**python3 main.py**
+**python3 cryptocurrency.py**
 above program will use all the custom made modules to calculate the greatest max span and will store it in db table.
 
 
